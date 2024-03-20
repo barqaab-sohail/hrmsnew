@@ -9,7 +9,8 @@
                          <v-toolbar-title>Login Form</v-toolbar-title>
                       </v-toolbar>
                       <v-card-text>
-                      <v-form ref="form">
+                      <v-form ref="form"   v-model="valid"
+    lazy-validation>
                              <v-text-field
                                v-model="username"
                                name="username"
@@ -17,6 +18,7 @@
                                type="text"
                                placeholder="username"
                                :rules="userNameRuless"
+                               required
                             ></v-text-field>
                             
                              <v-text-field
@@ -26,10 +28,11 @@
                                type="password"
                                placeholder="password"
                                :rules="inputRules"
+                               required
                             ></v-text-field>
  
                             <div class="red--text"> {{errorMessage}}</div>
-                            <v-btn type="submit"  @click="login" class="mt-4" color="primary" value="log in">{{stateObj.login.name}}</v-btn>
+                            <v-btn type="submit"  :disabled="!valid" @click="login" class="mt-4" color="primary" >Log In</v-btn>
                        </v-form>
                       </v-card-text>
                    </v-card>
@@ -50,11 +53,12 @@
        username: "",
        password: "",
        errorMessage: "",
+       valid: true,
        userNameRuless: [
         value => {
-          if (value?.length > 10) return true
+          if (value?.length > 3) return true
 
-          return 'First name must be at least 10 characters.'
+          return 'First name must be at least 3 characters.'
         },
       ],
        inputRules: [
@@ -71,10 +75,10 @@
    },
    methods: {
      login() {
-       //const { username } = this;
+       const { username } = this;
    
-       if(this.$refs.form.validate()) {
-        // this.$router.replace({ name: "dashboard", params: { username: username } });
+       if (this.$refs.form.validate()) {
+         this.$router.replace({ name: "dashboard", params: { username: username } });
         console.log('Login Pass');
        }else{
          console.log('Login Fail');
