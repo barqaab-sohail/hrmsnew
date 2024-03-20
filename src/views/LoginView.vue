@@ -1,22 +1,22 @@
 <template>
     <v-app>
        <v-main>
-          <v-container fluid fill-height>
-             <v-layout align-center justify-center>
+          <v-container >
+           
                 <v-flex xs12 sm8 md4>
-                   <v-card class="elevation-4">
+                   <v-card class="elevation-4"  max-width="344">
                       <v-toolbar dark color="primary">
-                         <v-toolbar-title>{{isRegister ? stateObj.register.name : stateObj.login.name}} form</v-toolbar-title>
+                         <v-toolbar-title>Login Form</v-toolbar-title>
                       </v-toolbar>
                       <v-card-text>
-                      <form ref="form" @submit.prevent="isRegister ? register() : login()">
+                      <v-form ref="form">
                              <v-text-field
                                v-model="username"
                                name="username"
                                label="Username"
                                type="text"
                                placeholder="username"
-                               required
+                               :rules="userNameRuless"
                             ></v-text-field>
                             
                              <v-text-field
@@ -25,48 +25,43 @@
                                label="Password"
                                type="password"
                                placeholder="password"
-                               required
+                               :rules="inputRules"
                             ></v-text-field>
  
-                            <v-text-field v-if="isRegister"
-                               v-model="confirmPassword"
-                               name="confirmPassword"
-                               label="Confirm Password"
-                               type="password"
-                               placeholder="cocnfirm password"
-                               required
-                            ></v-text-field>
                             <div class="red--text"> {{errorMessage}}</div>
-                            <v-btn type="submit" class="mt-4" color="primary" value="log in">{{isRegister ? stateObj.register.name : stateObj.login.name}}</v-btn>
-                            <div class="grey--text mt-4" v-on:click="isRegister = !isRegister;">
-                               {{toggleMessage}}  
-                            </div>
-                       </form>
+                            <v-btn type="submit"  @click="login" class="mt-4" color="primary" value="log in">{{stateObj.login.name}}</v-btn>
+                       </v-form>
                       </v-card-text>
                    </v-card>
                  
                 </v-flex>
-             </v-layout>
+          
           </v-container>
        </v-main>
     </v-app>
  </template>
  
- <script>
+ <script lang="js">
+ 
  export default {
    name: "LoginView",
    data() {
      return {
        username: "",
        password: "",
-       confirmPassword: "",
-       isRegister : false,
        errorMessage: "",
+       userNameRuless: [
+        value => {
+          if (value?.length > 10) return true
+
+          return 'First name must be at least 10 characters.'
+        },
+      ],
+       inputRules: [
+         v => !!v || 'This field is required',
+         v => v.length >=5 || 'Minimum Characters must be five'
+       ],
        stateObj: {
-          register :{
-             name: 'Register',
-             message: 'Aleady have an Acoount? login.'
-          },
           login : {
              name: 'Login',
              message: 'Register'
@@ -76,23 +71,15 @@
    },
    methods: {
      login() {
-       const { username } = this;
-       this.$router.replace({ name: "dashboard", params: { username: username } });
+       //const { username } = this;
+   
+       if(this.$refs.form.validate()) {
+        // this.$router.replace({ name: "dashboard", params: { username: username } });
+        console.log('Login Pass');
+       }else{
+         console.log('Login Fail');
+       }
      },
-     register() {
-        if(this.password == this.confirmPassword){
-           this.isRegister = false;
-           this.errorMessage = "";
-           this.$refs.form.reset();
-        }
-        else {
-          this.errorMessage = "password did not match"
-        }
-     }
    },
-       computed: {
-        toggleMessage : function() { 
-           return this.isRegister ? this.stateObj.register.message : this.stateObj.login.message }
-     }
  };
  </script>
