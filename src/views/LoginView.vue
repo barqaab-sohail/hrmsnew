@@ -9,16 +9,14 @@
                          <v-toolbar-title>Login Form</v-toolbar-title>
                       </v-toolbar>
                       <v-card-text>
-                      <v-form ref="form"   v-model="valid"
-    lazy-validation>
+                      <v-form ref="form">
                              <v-text-field
                                v-model="username"
                                name="username"
                                label="Username"
                                type="text"
                                placeholder="username"
-                               :rules="userNameRuless"
-                               required
+                               :rules="emailRules"
                             ></v-text-field>
                             
                              <v-text-field
@@ -27,12 +25,15 @@
                                label="Password"
                                type="password"
                                placeholder="password"
-                               :rules="inputRules"
-                               required
+                               :rules="passwordRules"
                             ></v-text-field>
  
                             <div class="red--text"> {{errorMessage}}</div>
-                            <v-btn type="submit"  :disabled="!valid" @click="login" class="mt-4" color="primary" >Log In</v-btn>
+                            <v-btn type="submit"  @click.prevent="login" class="mt-4" color="primary" value="log in">{{stateObj.login.name}}  <v-progress-circular
+                                  color="white"
+                                  indeterminate
+                            ></v-progress-circular>
+                          </v-btn>
                        </v-form>
                       </v-card-text>
                    </v-card>
@@ -45,7 +46,7 @@
  </template>
  
  <script lang="js">
- 
+ import axios from 'axios'
  export default {
    name: "LoginView",
    data() {
@@ -53,15 +54,12 @@
        username: "",
        password: "",
        errorMessage: "",
-       valid: true,
-       userNameRuless: [
-        value => {
-          if (value?.length > 3) return true
-
-          return 'First name must be at least 3 characters.'
-        },
+       url:  'http://192.168.1.10/hrms/api/mis/login',
+       emailRules: [
+       v => !!v || 'This field is required',
+       v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
       ],
-       inputRules: [
+       passwordRules: [
          v => !!v || 'This field is required',
          v => v.length >=5 || 'Minimum Characters must be five'
        ],
@@ -73,16 +71,17 @@
        }
      };
    },
+   
    methods: {
      login() {
-       const { username } = this;
-   
-       if (this.$refs.form.validate()) {
-         this.$router.replace({ name: "dashboard", params: { username: username } });
-        console.log('Login Pass');
-       }else{
-         console.log('Login Fail');
-       }
+      axios.post(this.url,{
+                email: this.username,
+                password: this.password
+              }).then(function (response) {
+                  console.log(response);
+              }).catch(function (error) {
+                console.log(error);
+              });
      },
    },
  };
