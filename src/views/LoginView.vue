@@ -23,12 +23,16 @@
                                v-model="password"
                                name="password"
                                label="Password"
-                               type="password"
+                               :type="show1 ? 'text' : 'password'"
                                placeholder="password"
                                :rules="passwordRules"
+                               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                               @click:append="show1 = !show1"
+                               
                             ></v-text-field>
  
                             <div class="red--text"> {{errorMessage}}</div>
+                            <v-checkbox label="Remember Me" v-model="rememberMe"></v-checkbox>
                             <v-btn type="submit" :disabled="!valid" @click.prevent="login" class="mt-4" color="primary" value="log in">{{stateObj.login.name}}<v-progress-circular
                                   v-show="progressBar" 
                                   color="white"
@@ -59,7 +63,9 @@
        errorMessage: "",
        valid: true,
        progressBar:false,
-       url:  'http://192.168.1.10/hrms/api/mis/login',
+       show1: false,
+       rememberMe: false,
+       url:  'http://localhost/hrms/api/mis/login',
        emailRules: [
        v => !!v || 'This field is required',
        v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
