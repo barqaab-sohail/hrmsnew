@@ -9,7 +9,7 @@
                          <v-toolbar-title>Login Form</v-toolbar-title>
                       </v-toolbar>
                       <v-card-text>
-                      <v-form ref="form">
+                      <v-form ref="form"  v-model="valid" lazy-validation>
                              <v-text-field
                                v-model="username"
                                name="username"
@@ -29,7 +29,8 @@
                             ></v-text-field>
  
                             <div class="red--text"> {{errorMessage}}</div>
-                            <v-btn type="submit"  @click.prevent="login" class="mt-4" color="primary" value="log in">{{stateObj.login.name}}  <v-progress-circular
+                            <v-btn type="submit" :disabled="!valid" @click.prevent="login" class="mt-4" color="primary" value="log in">{{stateObj.login.name}}<v-progress-circular
+                                  v-show="progressBar" 
                                   color="white"
                                   indeterminate
                             ></v-progress-circular>
@@ -47,6 +48,8 @@
  
  <script lang="js">
  import axios from 'axios'
+
+
  export default {
    name: "LoginView",
    data() {
@@ -54,6 +57,8 @@
        username: "",
        password: "",
        errorMessage: "",
+       valid: true,
+       progressBar:false,
        url:  'http://192.168.1.10/hrms/api/mis/login',
        emailRules: [
        v => !!v || 'This field is required',
@@ -73,15 +78,18 @@
    },
    
    methods: {
-     login() {
-      axios.post(this.url,{
+    async login() {
+      this.progressBar = true;
+      this.valid=false;
+      const  data  = await axios.post(this.url,{
                 email: this.username,
                 password: this.password
-              }).then(function (response) {
-                  console.log(response);
+              }).then(function (response){
+              return response;
               }).catch(function (error) {
                 console.log(error);
               });
+          console.log(data);
      },
    },
  };
