@@ -9,6 +9,7 @@
                          <v-toolbar-title>Login Form</v-toolbar-title>
                       </v-toolbar>
                       <v-card-text>
+                        <v-alert closable title="Sucess" text="You have "></v-alert>
                       <v-form ref="form"  v-model="valid" lazy-validation>
                              <v-text-field
                                v-model="username"
@@ -52,17 +53,23 @@
  
  <script lang="js">
  import axios from 'axios'
-
+ import {ref} from 'vue'
 
  export default {
    name: "LoginView",
+
+   setup(){
+      const progressBar= ref(false)
+      return {
+         progressBar,
+      }
+   },
    data() {
      return {
        username: "",
        password: "",
        errorMessage: "",
        valid: true,
-       progressBar:false,
        show1: false,
        rememberMe: false,
        url:  'http://localhost/hrms/api/mis/login',
@@ -87,15 +94,17 @@
     async login() {
       this.progressBar = true;
       this.valid=false;
-      const  data  = await axios.post(this.url,{
+      await axios.post(this.url,{
                 email: this.username,
                 password: this.password
               }).then(function (response){
-              return response;
+               console.log(response);
               }).catch(function (error) {
+               console.log('error');
                 console.log(error);
+               
               });
-          console.log(data);
+             
      },
    },
  };
