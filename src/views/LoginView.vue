@@ -9,19 +9,19 @@
                          <v-toolbar-title>Login Form</v-toolbar-title>
                       </v-toolbar>
                       <v-card-text>
-                        <v-alert closable title="Sucess" text="You have "></v-alert>
+                        <v-alert closable title="Error" :text=errorMessage  type="error" v-model="alert"></v-alert>
                       <v-form ref="form"  v-model="valid" lazy-validation>
                              <v-text-field
-                               v-model="username"
-                               name="username"
-                               label="Username"
+                               v-model="form.email"
+                               name="email"
+                               label="Email"
                                type="text"
-                               placeholder="username"
+                               placeholder="email"
                                :rules="emailRules"
                             ></v-text-field>
                             
                              <v-text-field
-                               v-model="password"
+                               v-model="form.password"
                                name="password"
                                label="Password"
                                :type="show1 ? 'text' : 'password'"
@@ -54,24 +54,31 @@
  <script lang="js">
  import axios from 'axios'
  import {ref} from 'vue'
+ import useLocalStorage from '../composable/useLocalStorate'
 
  export default {
    name: "LoginView",
 
    setup(){
-      const progressBar= ref(false)
+      const progressBar= ref(false);
+      const isLogin = useLocalStorage(false, 'isLoginUser');
       return {
          progressBar,
+         isLogin,
       }
    },
    data() {
+      
      return {
-       username: "",
-       password: "",
        errorMessage: "",
+       alert: false,
        valid: true,
        show1: false,
        rememberMe: false,
+       form: useLocalStorage({
+         email:"",
+         password:"",
+      },'loginForm'),
        url:  'http://localhost/hrms/api/mis/login',
        emailRules: [
        v => !!v || 'This field is required',
@@ -89,23 +96,34 @@
        }
      };
    },
-   
+  
    methods: {
     async login() {
       this.progressBar = true;
       this.valid=false;
-      await axios.post(this.url,{
-                email: this.username,
-                password: this.password
-              }).then(function (response){
-               console.log(response);
+      this.isLogin=true;
+      let {data} = await axios.post(this.url,this.form).then(function (response){
+               return response;
+               
               }).catch(function (error) {
                console.log('error');
-                console.log(error);
-               
+               return error.response;
               });
-             
+              if(data.status==200){
+               console.log('sucess');
+               this.valid= true;
+               this.progressBar = false;
+               this.$router.push({ path: '/dashboard' })
+              }else{
+               console.log('fail');
+               this.valid= true;
+               this.progressBar = false;
+               this.errorMessage = data.message;
+               this.alert=true;
+              }
+             console.log(data);
      },
+
    },
  };
  </script>
