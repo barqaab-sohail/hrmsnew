@@ -55,6 +55,7 @@
  import axios from 'axios'
  import {ref} from 'vue'
  import useLocalStorage from '../composable/useLocalStorate'
+ import {useAuthStore} from '../stores/auth'
 
  export default {
    name: "LoginView",
@@ -62,6 +63,7 @@
    setup(){
       const progressBar= ref(false);
       const isLogin = useLocalStorage(false, 'isLoginUser');
+      console.log(useAuthStore.state.count)
       return {
          progressBar,
          isLogin,
@@ -75,11 +77,11 @@
        valid: true,
        show1: false,
        rememberMe: false,
-       form: useLocalStorage({
+       form:{
          email:"",
          password:"",
-      },'loginForm'),
-       url:  'http://localhost/hrms/api/mis/login',
+      },
+      
        emailRules: [
        v => !!v || 'This field is required',
        v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
@@ -102,7 +104,7 @@
       this.progressBar = true;
       this.valid=false;
       this.isLogin=true;
-      let {data} = await axios.post(this.url,this.form).then(function (response){
+      let {data} = await axios.post('login',this.form).then(function (response){
                return response;
                
               }).catch(function (error) {
@@ -113,6 +115,10 @@
                console.log('sucess');
                this.valid= true;
                this.progressBar = false;
+               this.$store.commit('login', this.form.email)
+               localStorage.setItem('userName',data.userName);
+               localStorage.setItem('token',data.token);
+               localStorage.setItem('pictureUrl',data.pictureUrl);
                this.$router.push({ path: '/dashboard' })
               }else{
                console.log('fail');

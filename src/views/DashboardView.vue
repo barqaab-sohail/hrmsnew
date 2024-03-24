@@ -13,11 +13,33 @@
   
           <v-spacer></v-spacer>
   
-          <v-btn icon="mdi-magnify" variant="text"></v-btn>
+         
+          <v-avatar :image="pictureUrl"></v-avatar>
+          <v-banner-text class="ma-4">{{ userName }}</v-banner-text>
   
-          <v-btn icon="mdi-filter" variant="text"></v-btn>
-  
-          <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
+          <div class="text-center">
+    <v-menu
+      open-on-hover
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn
+          color="white"
+          v-bind="props"
+        >
+        <v-btn icon="mdi-dots-vertical" variant="text" @click.prevent="logout"></v-btn>
+        </v-btn>
+      </template>
+
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in rightItems"
+          :key="index"
+        >
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </div>
         </v-app-bar>
   
         <v-navigation-drawer
@@ -38,11 +60,19 @@
   </template>
 
 <script>
+//import {ref} from 'vue'
+
 export default {
     name: 'DashboardView',
+    
     data: () => ({
       drawer: false,
       group: null,
+      userName:localStorage.getItem('userName'),
+      pictureUrl:localStorage.getItem('pictureUrl'),
+      rightItems: [
+        { title: 'Logout' },
+      ],
       items: [
         {
           title: 'Foo',
@@ -60,9 +90,19 @@ export default {
           title: 'Buzz',
           value: 'buzz',
         },
+      
       ],
     }),
-
+    methods:{
+      logout(){
+       this.$store.commit('logout')
+      },
+      mounted() {
+        this.$store.commit('initializeStore')
+      },
+   
+    },
+    
     watch: {
       group () {
         this.drawer = false

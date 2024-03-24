@@ -1,29 +1,26 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import DashboardView from '../views/DashboardView'
 import LoginView from '../views/LoginView'
-import LoginNew from '../views/LoginNew'
+
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: DashboardView
-  },
-  {
-    path: '/loginnew',
-    name: 'loginnew',
-    component: LoginNew
+    name: 'login',
+    component: LoginView
   },
   {
     path: '/login',
     name: 'login',
     component: LoginView
   },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: DashboardView,
+    meta: { requiresAuth: true },
+  },
+ 
+  
   {
     path: '/about',
     name: 'about',
@@ -38,5 +35,21 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // User is authenticated, proceed to the route
+      next();
+    } else {
+      // User is not authenticated, redirect to login
+      next('/login');
+    }
+  } else {
+    // Non-protected route, allow access
+    next();
+  }
+});
 
 export default router
