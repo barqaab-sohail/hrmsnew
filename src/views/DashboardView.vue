@@ -26,7 +26,7 @@
           color="white"
           v-bind="props"
         >
-        <v-btn icon="mdi-dots-vertical" variant="text" @click.prevent="logout"></v-btn>
+        <v-btn icon="mdi-dots-vertical" variant="text" ></v-btn>
         </v-btn>
       </template>
 
@@ -35,7 +35,9 @@
           v-for="(item, index) in rightItems"
           :key="index"
         >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        <v-btn variant="outlined" color="primary" @click.prevent="logout">
+          {{ item.title }}
+        </v-btn>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -48,7 +50,7 @@
           temporary
         >
           <v-list
-            :items="items"
+            :items="items" 
           ></v-list>
         </v-navigation-drawer>
   

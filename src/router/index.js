@@ -37,8 +37,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token');
   if (to.meta.requiresAuth) {
-    const token = localStorage.getItem('token');
+   
     if (token) {
       // User is authenticated, proceed to the route
       next();
@@ -48,7 +49,13 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     // Non-protected route, allow access
-    next();
+    // and if already login redirect to dashboard
+    if (to.name === 'login' && token) {
+      return  next({ path: '/dashboard' });
+    }else{
+      next();
+    }
+    
   }
 });
 
