@@ -3,13 +3,9 @@ import DashboardView from '../views/DashboardView'
 import LoginView from '../views/LoginView'
 
 const routes = [
+
   {
     path: '/',
-    name: 'login',
-    component: LoginView
-  },
-  {
-    path: '/login',
     name: 'login',
     component: LoginView
   },

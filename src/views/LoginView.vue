@@ -1,10 +1,13 @@
 <template>
     <v-app>
        <v-main>
-          <v-container >
-           
+          <v-container  >
+         <v-row>
+            <v-col class="justify-center"  md="4">
+            </v-col>
+         <v-col class="justify-center"  md="4">
                 <v-flex xs12 sm8 md4>
-                   <v-card class="elevation-4"  max-width="344">
+                   <v-card class="elevation-4">
                       <v-toolbar dark color="primary">
                          <v-toolbar-title>Login Form</v-toolbar-title>
                       </v-toolbar>
@@ -45,7 +48,8 @@
                    </v-card>
                  
                 </v-flex>
-          
+          </v-col>
+         </v-row>
           </v-container>
        </v-main>
     </v-app>
@@ -54,32 +58,31 @@
  <script lang="js">
  import axios from 'axios'
  import {ref} from 'vue'
- import useLocalStorage from '../composable/useLocalStorate'
- import {useAuthStore} from '../stores/auth'
+ //import useLocalStorage from '../composable/useLocalStorate'
+ //import {useAuthStore} from '../stores/auth'
+
 
  export default {
    name: "LoginView",
 
    setup(){
       const progressBar= ref(false);
-      const isLogin = useLocalStorage(false, 'isLoginUser');
-      console.log(useAuthStore.state.count)
+      //const isLogin = useLocalStorage(false, 'isLoginUser');
       return {
          progressBar,
-         isLogin,
+        // isLogin,
       }
    },
    data() {
-      
      return {
        errorMessage: "",
        alert: false,
        valid: true,
        show1: false,
-       rememberMe: false,
+       rememberMe: localStorage.getItem('password')===null?false:true,
        form:{
-         email:"",
-         password:"",
+         email:localStorage.getItem('email'),
+         password:localStorage.getItem('password'),
       },
       
        emailRules: [
@@ -103,7 +106,7 @@
     async login() {
       this.progressBar = true;
       this.valid=false;
-      this.isLogin=true;
+     
       let {data} = await axios.post('login',this.form).then(function (response){
                return response;
                
@@ -112,13 +115,20 @@
                return error.response;
               });
               if(data.status==200){
-               console.log('sucess');
+       
                this.valid= true;
                this.progressBar = false;
                this.$store.commit('login', this.form.email)
                localStorage.setItem('userName',data.userName);
                localStorage.setItem('token',data.token);
                localStorage.setItem('pictureUrl',data.pictureUrl);
+               if(this.rememberMe){
+                  localStorage.setItem('email',this.form.email);
+                  localStorage.setItem('password',this.form.password);
+               }else{
+                  localStorage.removeItem('email');
+                  localStorage.removeItem('password');
+               }
                this.$router.push({ path: '/dashboard' })
               }else{
                console.log('fail');

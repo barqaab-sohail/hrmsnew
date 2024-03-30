@@ -44,6 +44,7 @@
           >
             {{ next.text }}
           </a>
+          <v-btn @click="login">Login</v-btn>
         </v-row>
       </v-col>
 
@@ -145,5 +146,11 @@ export default {
       },
     ],
   }),
+  methods: {
+    login(){
+      this.$router.push({ path: '/login' })
+    }
+
+   },
 }
 </script>
