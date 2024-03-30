@@ -8,7 +8,7 @@
           prominent
         >
           <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-  
+          <img src="/img/mono.jpg" width="50"/>
           <v-toolbar-title>HRMS</v-toolbar-title>
   
           <v-spacer></v-spacer>
@@ -25,6 +25,7 @@
         <v-btn
           color="white"
           v-bind="props"
+          class="mb-4"
         >
         <v-btn icon="mdi-dots-vertical" variant="text" ></v-btn>
         </v-btn>
