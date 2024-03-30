@@ -48,10 +48,12 @@
         <v-navigation-drawer
           v-model="drawer"
           location="left"
-          :width="500"
+          :width="400"
           temporary
         >
         <LeftMenuView/>
+        <MenuItem/>
+       
           
         </v-navigation-drawer>
   
@@ -65,9 +67,13 @@
 <script>
 //import {ref} from 'vue'
 import LeftMenuView from './LeftMenuView.vue'
+import MenuItem from '../components/MenuItem.vue'
+
 export default {
   components: {
-    LeftMenuView
+    LeftMenuView,
+    MenuItem
+   
   },
     name: 'DashboardView',
 
