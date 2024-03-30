@@ -9,7 +9,7 @@
         >
           <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
   
-          <v-toolbar-title>My files</v-toolbar-title>
+          <v-toolbar-title>HRMS</v-toolbar-title>
   
           <v-spacer></v-spacer>
   
@@ -47,11 +47,11 @@
         <v-navigation-drawer
           v-model="drawer"
           location="left"
+          :width="500"
           temporary
         >
-          <v-list
-            :items="items" 
-          ></v-list>
+        <LeftMenuView/>
+          
         </v-navigation-drawer>
   
         <v-main style="height: 100vh;">
@@ -63,10 +63,13 @@
 
 <script>
 //import {ref} from 'vue'
-
+import LeftMenuView from './LeftMenuView.vue'
 export default {
+  components: {
+    LeftMenuView
+  },
     name: 'DashboardView',
-    
+
     data: () => ({
       drawer: false,
       group: null,
@@ -75,25 +78,7 @@ export default {
       rightItems: [
         { title: 'Logout' },
       ],
-      items: [
-        {
-          title: 'Foo',
-          value: 'foo',
-        },
-        {
-          title: 'Bar',
-          value: 'bar',
-        },
-        {
-          title: 'Fizz',
-          value: 'fizz',
-        },
-        {
-          title: 'Buzz',
-          value: 'buzz',
-        },
       
-      ],
     }),
     methods:{
       logout(){
